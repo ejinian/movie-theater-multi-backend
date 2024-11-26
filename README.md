@@ -30,7 +30,7 @@ In movie_theater_laravel, navigate to .env and set the DB_DATABASE=../../db.sqli
 ### Schema
 Movie -> Represents a Movie object, title and genre \
 Theater -> Represets a Theater object, name and location \
-Sales -> Represents a many-to-many relation between Movie and Theater \
+Sales -> Represents a many-to-many relation between Movie and Theater 
 
 ### Extensions for the Django side
 - Basic data analysis of movies, theaters, and sales
