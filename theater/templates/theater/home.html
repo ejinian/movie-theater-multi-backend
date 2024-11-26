@@ -1,0 +1,88 @@
+{% extends "theater/base.html" %}
+
+{% block content %}
+<h1 class="text-center mb-4">Movie Theater Analytics</h1>
+<div class="d-flex justify-content-center">
+    <div>
+        <input type="text" id="calendar" class="form-control" placeholder="Select a date">
+    </div>
+</div>
+<div id="results" class="mt-4 text-center"></div>
+<div class="container">
+<div class="row">
+    <div class="col-md-4">
+        <h2>Sales Statistics</h2>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Key Metrics</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Total Sales: ${{ total_sales }}</li>
+                    <li class="list-group-item">Average Tickets Sold per Show: {{ avg_tickets_sold }}</li>
+                    <li class="list-group-item">Median Tickets Sold per Show: {{ median_tickets_sold }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <h2>Top Performing Categories</h2>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Top Genres</h5>
+                <ul class="list-group list-group-flush">
+                    {% for genre_stat in genre_stats %}
+                    <li class="list-group-item">{{ genre_stat.movie__genre }}: {{ genre_stat.total_tickets }} tickets sold</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <h2>Top Theaters</h2>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Top Theaters</h5>
+                <ul class="list-group list-group-flush">
+                    {% for theater_stat in theater_stats %}
+                    <li class="list-group-item">{{ theater_stat.theater__name }}: {{ theater_stat.total_tickets }} tickets sold</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script>
+    $(document).ready(function() {
+        flatpickr("#calendar", {
+            dateFormat: "Y-m-d",
+            onChange: function(selectedDates, dateStr, instance) {
+                if (dateStr) {
+                    $.ajax({
+                        url: `/top-theater/${dateStr}/`,
+                        method: "GET",
+                        success: function(data) {
+                            if (data.error) {
+                                $("#results").html(`<div class="alert alert-warning">${data.error}</div>`);
+                            } else {
+                                $("#results").html(`
+                                    <div class="alert alert-success">
+                                        <h4>${data.theater}</h4>
+                                        <p>Movie: ${data.movie}</p>
+                                        <p>Tickets Sold: ${data.tickets_sold}</p>
+                                    </div>
+                                `);
+                            }
+                        },
+                        error: function() {
+                            $("#results").html(`<div class="alert alert-danger">An error occurred. Please try again.</div>`);
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}
