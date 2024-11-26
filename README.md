@@ -30,7 +30,7 @@ In movie_theater_laravel, navigate to .env and set the DB_DATABASE=../../db.sqli
 ### Schema
 Movie -> Represents a Movie object, title and genre \
 Theater -> Represets a Theater object, name and location \
-Sales -> Represents a mapping table between Movie and Theater \
+Sales -> Represents a mapping table between Movie and Theater
 
 1. Theater and Sales -> One to Many
 2. Movie and Sales -> One to Many
